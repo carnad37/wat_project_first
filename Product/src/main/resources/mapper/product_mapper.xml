@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hhs.product.dao.ProductMapper" >
+
+    <select id="select" parameterType="com.hhs.product.entity.ProductSearchEntity" resultType="com.hhs.product.entity.ProductEntity">
+        SELECT *
+        FROM PRODUCT
+        <where>
+            delete_time IS NULL
+            <if test='productId > 0'>
+                AND product_id = #{productId}
+            </if>
+            <if test='name != null and name != ""'>
+                AND `name` LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test='searchStartDate != null'>
+                AND DATE_FORAMT(create_time, '%Y-%m-%d') >= #{searchStartDate}
+            </if>
+            <if test='searchEndDate != null'>
+            <![CDATA[
+                AND DATE_FORAMT(create_time, '%Y-%m-%d') <= #{searchEndDate}
+            ]]>
+            </if>
+        </where>
+        <if test='page > 0'>
+            LIMIT #{pageViewCnt} OFFSET #{page}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.hhs.product.entity.ProductEntity" >
+        INSERT INTO PRODUCT(
+            `name`, `price`, `create_time`
+        ) VALUES (
+            #{name}, #{price}, #{createTime}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.hhs.product.entity.ProductEntity">
+        UPDATE PRODUCT SET
+            `name` = #{name}
+            , `price` = #{price}
+            , `update_time` = #{updateTime}
+        WHERE
+            product_id = #{productId}
+    </update>
+
+    <update id="delete" parameterType="com.hhs.product.entity.ProductEntity">
+        UPDATE PRODUCT SET
+            `delete_time` = #{deleteTime}
+        WHERE
+            product_id = #{productId}
+            AND delete_time IS NULL
+    </update>
+
+</mapper>
