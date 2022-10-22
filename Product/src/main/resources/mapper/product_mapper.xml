@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hhs.product.dao.ProductMapper" >
 
-    <select id="select" parameterType="com.hhs.product.entity.ProductSearchEntity" resultType="com.hhs.product.entity.ProductEntity">
+    <select id="select" parameterType="productSearchEntity" resultType="com.hhs.product.entity.ProductEntity">
         SELECT *
-        FROM PRODUCT
+        FROM PRODUCT_TABLE
         <where>
             delete_time IS NULL
             <if test='productId > 0'>
@@ -21,14 +21,17 @@
                 AND DATE_FORAMT(create_time, '%Y-%m-%d') <= #{searchEndDate}
             ]]>
             </if>
+            <if test='productIdList != null'>
+                AND product_id IN <foreach collection="productIdList" item="item" open="(" separator="," close=")">#{item}</foreach>
+            </if>
         </where>
-        <if test='page > 0'>
+        <if test='pageViewCnt > 0'>
             LIMIT #{pageViewCnt} OFFSET #{page}
         </if>
     </select>
 
     <insert id="insert" parameterType="com.hhs.product.entity.ProductEntity" >
-        INSERT INTO PRODUCT(
+        INSERT INTO PRODUCT_TABLE(
             `name`, `price`, `create_time`
         ) VALUES (
             #{name}, #{price}, #{createTime}
@@ -36,7 +39,7 @@
     </insert>
 
     <update id="update" parameterType="com.hhs.product.entity.ProductEntity">
-        UPDATE PRODUCT SET
+        UPDATE PRODUCT_TABLE SET
             `name` = #{name}
             , `price` = #{price}
             , `update_time` = #{updateTime}
@@ -45,7 +48,7 @@
     </update>
 
     <update id="delete" parameterType="com.hhs.product.entity.ProductEntity">
-        UPDATE PRODUCT SET
+        UPDATE PRODUCT_TABLE SET
             `delete_time` = #{deleteTime}
         WHERE
             product_id = #{productId}

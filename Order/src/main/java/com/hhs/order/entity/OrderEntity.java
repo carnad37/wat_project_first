@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 상식상에서 필요한 주문정보
@@ -24,29 +25,20 @@ import java.time.LocalDateTime;
 @Setter
 public class OrderEntity {
 
-    public OrderEntity(long productId, String userId, LocalDateTime createTime) {
-        this.productId = productId;
-        this.userId = userId;
-        this.createTime = createTime;
-    }
-
     //주문 아이디
-    private long orderId;
-
-    //제품 아이디
-    private long productId;
-
-    //제품 수량
-    private long amount;
+    private int orderId;
 
     //유저 아이디
     private String userId;
 
+    //제품 번호 리스트
+    private List<Integer> productIdList;
+
+    //제품 리스트
+    private List<ProductEntity> productList;
+
     //등록시간
     private LocalDateTime createTime;
-
-    //업데이트시간
-    private LocalDateTime updateTime;
 
     //삭제시간
     private LocalDateTime deleteTime;

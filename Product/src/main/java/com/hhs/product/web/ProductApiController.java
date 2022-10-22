@@ -1,14 +1,13 @@
 package com.hhs.product.web;
 
 import com.hhs.product.entity.ProductEntity;
+import com.hhs.product.entity.ProductResponseEntity;
 import com.hhs.product.entity.ProductSearchEntity;
 import com.hhs.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +19,25 @@ public class ProductApiController {
     private final ProductService productService;
 
     @GetMapping(value = "select", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProductEntity>> select(ProductSearchEntity searchEntity) {
+    public ResponseEntity<ProductResponseEntity<List<ProductEntity>>> select(ProductSearchEntity searchEntity) {
         List<ProductEntity> result = productService.select(searchEntity);
+
+        ProductResponseEntity response = new ProductResponseEntity();
+        response.setMessage("success");
+        response.setResult(result);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 통신용 api
+     * @param productIdList
+     * @return
+     */
+    @GetMapping(value = "select/id", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductEntity>> selectByIdList(@RequestBody @RequestParam(name = "productIdList") List<Integer> productIdList) {
+        List<ProductEntity> result = productService.selectByIdList(productIdList);
+
         return ResponseEntity.ok(result);
     }
 

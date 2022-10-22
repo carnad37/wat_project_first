@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ProductEntity {
 
-    private long productId;
+    private int productId;
 
     private String name;
 

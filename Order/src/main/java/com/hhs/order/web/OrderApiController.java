@@ -1,28 +1,32 @@
 package com.hhs.order.web;
 
+import com.hhs.order.entity.OrderEntity;
+import com.hhs.order.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1.0")
 public class OrderApiController {
+
+    private final OrderService orderService;
 
     /**
      * 상품 등록
      * @return
      */
-    @GetMapping(value = "create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> productCreate() {
-
+    @PostMapping (value = "create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> orderCreate(@RequestBody OrderEntity orderEntity) {
+        int retCnt = orderService.insert(orderEntity);
 
         return null;
     }
 
     /**
-     * 상품 등록
+     * 상품 상세
      * @return
      */
     @GetMapping(value = "read", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +37,7 @@ public class OrderApiController {
     }
 
     /**
-     * 상품 등록
+     * 상품 전체
      * @return
      */
     @GetMapping(value = "all_read", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +59,7 @@ public class OrderApiController {
     }
 
     /**
-     * 상품 수
+     * 상품 수정
      * @return
      */
     @GetMapping(value = "update", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,7 +70,7 @@ public class OrderApiController {
     }
 
     /**
-     * 상품 삭
+     * 상품 삭제
      * @return
      */
     @GetMapping(value = "delete", produces = MediaType.APPLICATION_JSON_VALUE)

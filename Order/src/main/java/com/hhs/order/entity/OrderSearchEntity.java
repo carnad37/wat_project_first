@@ -12,10 +12,10 @@ public class OrderSearchEntity {
     private static final int DEFAULT_PAGE_VIEW_CNT = 10;
 
     //유저 Id
-    private long userId;
+    private String userId;
 
     //주문 Id
-    private long orderId;
+    private int orderId;
 
     //검색할 페이지
     private int page;
