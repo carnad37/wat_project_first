@@ -3,40 +3,70 @@
 <mapper namespace="com.hhs.order.dao.OrderMapper" >
 
     <select id="select" parameterType="com.hhs.order.entity.OrderSearchEntity" resultType="com.hhs.order.entity.OrderEntity">
-        SELECT *
-        FROM ORDER_TABLE
-        <where>
-            delete_time IS NULL
-            /* 기본적으로 유저는 필수 조건 필수 */
-            AND user_id = #{userId}
-            <if test='orderId > 0'>
-                AND order_id = #{orderId}
-            </if>
-            <if test='productId > 0'>
-                AND product_id = #{productId}
-            </if>
-            <if test='searchStartDate != null'>
-                AND DATE_FORAMT(create_time, '%Y-%m-%d') >= #{searchStartDate}
-            </if>
-            <if test='searchEndDate != null'>
+        SELECT
+            order_id
+             , user_id
+             , create_time
+             , delete_time
+             , sum(total) as total
+        FROM (SELECT * FROM ORDER_TABLE WHERE delete_time IS NULL) NDT
+        GROUP BY order_id
+        HAVING user_id = #{userId}
+        <if test='searchStartDate != null'>
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') >= #{searchStartDate}
+        </if>
+        <if test='searchEndDate != null'>
             <![CDATA[
-                AND DATE_FORAMT(create_time, '%Y-%m-%d') <= #{searchEndDate}
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') <= #{searchEndDate}
             ]]>
-            </if>
-        </where>
+        </if>
         <if test='pageViewCnt > 0'>
             LIMIT #{pageViewCnt} OFFSET #{page}
         </if>
     </select>
 
+    <select id="selectDetail" parameterType="com.hhs.order.entity.OrderSearchEntity" resultType="com.hhs.order.entity.ProductEntity">
+        SELECT
+            product_id
+            , amount
+            , total
+            , create_time
+        FROM ORDER_TABLE
+        WHERE delete_time IS NULL
+        AND order_id = #{orderId}
+        /* 기본적으로 유저는 필수 조건 필수 */
+        AND user_id = #{userId}
+        <if test='pageViewCnt > 0'>
+            LIMIT #{pageViewCnt} OFFSET #{page}
+        </if>
+    </select>
+
+    <select id="selectCountByProductId" parameterType="com.hhs.order.entity.OrderSearchEntity" resultType="int">
+        SELECT COUNT(order_id) AS CNT
+        FROM ORDER_TABLE
+        WHERE `delete_time` IS NULL
+        AND `product_id` = #{productId}
+    </select>
+
     <insert id="insert" parameterType="com.hhs.order.entity.OrderEntity">
-        INSERT INTO ORDER_TABLE(
-            `user_id`, `product_id`, `amount`, `create_time`
-        ) VALUES
-        <foreach collection="productList" item="item" open="(" separator="),(" close=")">
-            #{userId}, #{item.productId}, #{item.amount}, #{createTime}
-        </foreach>
+        <selectKey resultType="int" keyProperty="orderId" order="BEFORE">
+            SELECT IF(EXISTS(SELECT order_id FROM ORDER_TABLE),  MAX(order_id) + 1, 1) FROM ORDER_TABLE
+        </selectKey>
+        <include refid="insertQuery"/>
     </insert>
+
+    <insert id="update" parameterType="com.hhs.order.entity.OrderEntity">
+        <include refid="insertQuery"/>
+    </insert>
+
+    <sql id="insertQuery">
+        INSERT INTO ORDER_TABLE(
+        `order_id`, `user_id`, `product_id`, `amount`, `total`, `create_time`
+        ) VALUES
+        <foreach collection="productList" item="item" open="(" close=")" separator="),(">
+          #{orderId}, #{userId}, #{item.productId}, #{item.amount}, #{item.total}, #{createTime}
+        </foreach>
+    </sql>
 
     <update id="delete" parameterType="com.hhs.order.entity.OrderEntity">
         UPDATE ORDER_TABLE SET

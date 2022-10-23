@@ -1,0 +1,36 @@
+### 주문 등록
+POST http://localhost:9090/order/api/create
+Content-Type: application/json
+
+{"userId":"tester","productList" :[{"productId":1,"amount":12}, {"productId":2,"amount":5}]}
+
+### 주문 검색
+POST http://localhost:9090/order/api/select
+Content-Type: application/json
+
+//{"userId":"tester", "searchStartDate": "2020-01-05", "searchEndDate": "2020-05-07"}
+{"userId":"tester", "searchStartDate": "2020-01-05", "searchEndDate": "2023-05-07"}
+
+### 주문 상세 검색
+POST http://localhost:9090/order/api/select/detail
+Content-Type: application/json
+
+{"userId":"tester", "orderId": 1}
+
+### 주문 수정
+PUT http://localhost:9090/order/api/update
+Content-Type: application/json
+
+{"userId":"tester", "orderId":1, "productList" :[{"productId":1,"amount":12}, {"productId":2,"amount":5}]}
+
+### 주문 삭제
+PUT http://localhost:9090/order/api/delete
+Content-Type: application/json
+
+{"userId":"tester", "orderId":1}
+
+### 제품 변경여부 확인
+POST http://localhost:9090/order/api/exist/product/id
+Content-Type: application/json
+
+{"productId" :  1}

@@ -3,7 +3,7 @@ package com.hhs.order.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,6 +17,9 @@ public class OrderSearchEntity {
     //주문 Id
     private int orderId;
 
+    //제품 Id
+    private int productId;
+
     //검색할 페이지
     private int page;
 
@@ -27,9 +30,9 @@ public class OrderSearchEntity {
     private String searchWord;
 
     //검색 시작
-    private LocalDateTime searchStartDate;
+    private LocalDate searchStartDate;
 
     //검색 종료
-    private LocalDateTime searchEndDate;
+    private LocalDate searchEndDate;
 
 }

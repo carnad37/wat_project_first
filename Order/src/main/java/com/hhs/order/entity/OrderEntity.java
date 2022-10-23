@@ -31,9 +31,6 @@ public class OrderEntity {
     //유저 아이디
     private String userId;
 
-    //제품 번호 리스트
-    private List<Integer> productIdList;
-
     //제품 리스트
     private List<ProductEntity> productList;
 
@@ -42,5 +39,9 @@ public class OrderEntity {
 
     //삭제시간
     private LocalDateTime deleteTime;
+
+    //총합계
+    private long total;
+
 
 }

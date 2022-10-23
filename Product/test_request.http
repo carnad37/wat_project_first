@@ -1,0 +1,33 @@
+### 제품 검색 (제품 ID, 제품명, 등록일 검색) - 페이징 가능
+POST http://localhost:8080/product/api/select
+Content-Type: application/json
+
+{}
+
+### 제품 검색 (제품 id 멀티검색)
+POST http://localhost:8080/product/api/select/id/multi
+Content-Type: application/json
+
+{"productIdList" :  [1,2,3,4]}
+
+
+### 제품등록 (제품명, 가격)
+POST http://localhost:8080/product/api/create
+Content-Type: application/json
+
+{"name" : "테스트@", "price" : 2000}
+
+
+### 제품수정 (제품 id, 제품명, 가격)
+PUT http://localhost:8080/product/api/update
+Content-Type: application/json
+
+{"productId":1, "name" : "변경!!", "price" : 1400}
+
+
+### 제품 삭제 (제품 id)
+DELETE http://localhost:8080/product/api/delete
+Content-Type: application/json
+
+{"productId" : 14}
+

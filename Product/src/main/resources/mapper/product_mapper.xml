@@ -14,11 +14,11 @@
                 AND `name` LIKE CONCAT('%', #{name}, '%')
             </if>
             <if test='searchStartDate != null'>
-                AND DATE_FORAMT(create_time, '%Y-%m-%d') >= #{searchStartDate}
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') >= #{searchStartDate}
             </if>
             <if test='searchEndDate != null'>
             <![CDATA[
-                AND DATE_FORAMT(create_time, '%Y-%m-%d') <= #{searchEndDate}
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') <= #{searchEndDate}
             ]]>
             </if>
             <if test='productIdList != null'>
@@ -31,10 +31,13 @@
     </select>
 
     <insert id="insert" parameterType="com.hhs.product.entity.ProductEntity" >
+        <selectKey resultType="int" keyProperty="productId" order="BEFORE">
+            SELECT IF(EXISTS(SELECT product_id FROM PRODUCT_TABLE), MAX(product_id) + 1, 1) FROM PRODUCT_TABLE
+        </selectKey>
         INSERT INTO PRODUCT_TABLE(
-            `name`, `price`, `create_time`
+            `product_id`, `name`, `price`, `create_time`
         ) VALUES (
-            #{name}, #{price}, #{createTime}
+            #{productId}, #{name}, #{price}, #{createTime}
         )
     </insert>
 
@@ -45,6 +48,7 @@
             , `update_time` = #{updateTime}
         WHERE
             product_id = #{productId}
+            AND delete_time IS NULL
     </update>
 
     <update id="delete" parameterType="com.hhs.product.entity.ProductEntity">
