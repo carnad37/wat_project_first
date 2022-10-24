@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 public class ServiceMessageException extends RuntimeException {
 
     //에러코드
-    private HttpStatus status;
+    private HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
     public ServiceMessageException(String message) {
         super(message);
@@ -19,4 +19,7 @@ public class ServiceMessageException extends RuntimeException {
         this.status = status;
     }
 
+    public HttpStatus getStatus() {
+        return status;
+    }
 }

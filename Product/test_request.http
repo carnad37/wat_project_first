@@ -31,3 +31,8 @@ Content-Type: application/json
 
 {"productId" : 14}
 
+### 에러호출
+DELETE http://localhost:8080/product/api/delete1212
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="EUC-KR" ?>

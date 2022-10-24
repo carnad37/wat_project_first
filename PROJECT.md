@@ -4,9 +4,12 @@
 
 * maven multi-module로 구성
 * 테스트상 같은 db 참조하도록 구성.
-* 
+* 모든 response, request 타입은 json으로 통일.
 
-ORDER APPLICATION :
+[//]: # (> 제품 흐름)
+[//]: # (* 제품 등록 : 요청&#40;Client&#41; -> 제품등록&#40;Product&#41; -> 등록된 제품정보 전달&#40;Client&#41;)
+[//]: # (* 제품 수정 : 요청&#40;Client&#41; -> 제품이 있는지 확인&#40;Product&#41; -> 제품 주문중인지 확인&#40;Order&#41; -> 제품 수정&#40;Product&#41; -> 변경 관련 정보 전달&#40;Client&#41; )
+[//]: # (* 제품 삭제 : 요청&#40;)
 
 ### 2. 요청사항
 
@@ -44,14 +47,21 @@ ORDER APPLICATION :
 7. 상품 삭제 (Delete)
    * 구현 삭제
 
-### 3. 일정뷰
+### 3. 일정
 
 * 10.21 : 기본틀 구성.
 * 10.22 : 어플리케이션간 통신 구성.
 * 10.23 : 기본 기능완료. 시간이 남으면 배포 테스트.
 * 10.24 : 오류 수정 및 기능 보완. 리뷰 내용 및 문서 정리. TODO의 exception 처리.
 * 10.25 : 리뷰 내용 마지막 점검 및 테스트.
-* 10.26 : 테스트 및 리.
+* 10.26 : 테스트 및 리뷰.
+
+
+### 4.오류처리
+
+* HttpMessageNotReadableException : Controller 데이터 맵핑 실패 (body -> json)
+* HttpRequestMethodNotSupportedException : Method 가 일치하지 않을시.
+* HttpMediaTypeNotSupportedException: content type이 일치하지 않을시.
 
 ### ?. 추가
 * RestTemplate의 exchange와 (get|post)ForObject의 차이 및 사용하는 시점
@@ -60,3 +70,4 @@ ORDER APPLICATION :
 * order id가 max값이라 이전 max값을 알아야지만 다음 상품 등록가능. id값을 날짜로 하는것도 고려.
 * RestTemplate의 getForObject로 list parameter 깔끔하게 넘겨보기(헤더 설정해보기).
 * GET과 POST의 좀더 명확한 사용구분
+* ControllerAdivce와 ErrorController 차이

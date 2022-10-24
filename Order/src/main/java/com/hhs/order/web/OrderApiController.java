@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/")
+@RequestMapping(value = "/api/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderApiController {
 
     private final OrderService orderService;
@@ -27,7 +27,7 @@ public class OrderApiController {
      *
      * @return
      */
-    @PostMapping (value = "create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping (value = "create")
     public ResponseEntity<OrderResponseEntity> orderCreate(@RequestBody OrderEntity orderEntity) {
         //필요한값만 넘김.
         OrderEntity sendEntity = new OrderEntity();
@@ -53,7 +53,7 @@ public class OrderApiController {
      * @param searchEntity
      * @return
      */
-    @PostMapping(value = "select", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "select")
     public ResponseEntity<OrderResponseEntity> productRead(@RequestBody OrderSearchEntity searchEntity) {
         OrderSearchEntity sendEntity = new OrderSearchEntity();
         sendEntity.setUserId(searchEntity.getUserId());
@@ -79,7 +79,7 @@ public class OrderApiController {
      * @param searchEntity
      * @return
      */
-    @PostMapping(value = "select/detail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "select/detail")
     public ResponseEntity<OrderResponseEntity> productReadDetail(@RequestBody OrderSearchEntity searchEntity) {
         //필요한값만 넘김.
         OrderSearchEntity sendEntity = new OrderSearchEntity();
@@ -111,7 +111,7 @@ public class OrderApiController {
      * @param searchEntity
      * @return
      */
-    @PostMapping(value = "exist/product/id", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "exist/product/id")
     public ResponseEntity<OrderResponseEntity> orderChangeChecker(@RequestBody OrderSearchEntity searchEntity) {
         //필요한값만 넘김.
         OrderSearchEntity sendEntity = new OrderSearchEntity();
@@ -134,7 +134,7 @@ public class OrderApiController {
      *
      * @return
      */
-    @PutMapping(value = "update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "update")
     public ResponseEntity<Object> productUpdate(@RequestBody OrderEntity orderEntity) {
         //필요한값만 넘김.
         OrderEntity sendEntity = new OrderEntity();
@@ -159,7 +159,7 @@ public class OrderApiController {
      *
      * @return
      */
-    @DeleteMapping(value = "delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "delete")
     public ResponseEntity<OrderResponseEntity> productDelete(@RequestBody OrderEntity orderEntity) {
         //필요한값만 넘김.
         OrderEntity sendEntity = new OrderEntity();

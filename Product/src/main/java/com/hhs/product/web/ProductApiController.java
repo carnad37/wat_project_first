@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ProductApiController {
 
@@ -25,7 +25,7 @@ public class ProductApiController {
      * @param searchEntity
      * @return
      */
-    @PostMapping(value = "select", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "select")
     public ResponseEntity<ProductResponseEntity<List<ProductEntity>>> select(@RequestBody ProductSearchEntity searchEntity) {
         List<ProductEntity> result = productService.select(searchEntity);
 
@@ -42,7 +42,7 @@ public class ProductApiController {
      * @param product
      * @return
      */
-    @PostMapping(value = "select/id/multi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "select/id/multi")
     public ResponseEntity<List<ProductEntity>> selectByIdList(@RequestBody ProductEntity product) {
         List<ProductEntity> result = productService.selectByIdList(product.getProductIdList());
         return ResponseEntity.ok(result);
@@ -54,7 +54,7 @@ public class ProductApiController {
      * @param product
      * @return
      */
-    @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "create")
     public ResponseEntity<ProductResponseEntity> create(@RequestBody ProductEntity product) {
         //유효성체크
         ProductEntity sendEntity = new ProductEntity();
@@ -62,14 +62,9 @@ public class ProductApiController {
         sendEntity.setPrice(product.getPrice());
 
         ProductResponseEntity response = new ProductResponseEntity();
-        try {
-            ProductEntity resultEntity = productService.insert(sendEntity);
-            response.setMessage("제품 등록에 성공하였습니다.");
-            response.setResult(resultEntity);
-        } catch (ServiceMessageException sme) {
-            response.setMessage(sme.getMessage());
-            response.setResult(null);
-        }
+        ProductEntity resultEntity = productService.insert(sendEntity);
+        response.setMessage("제품 등록에 성공하였습니다.");
+        response.setResult(resultEntity);
 
         return ResponseEntity.ok(response);
     }
@@ -79,7 +74,7 @@ public class ProductApiController {
      * @param product
      * @return
      */
-    @PutMapping(value = "update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "update")
     public ResponseEntity<ProductResponseEntity> update(@RequestBody ProductEntity product) {
         //유효성체크
         ProductEntity sendEntity = new ProductEntity();
@@ -104,7 +99,7 @@ public class ProductApiController {
      * @param product
      * @return
      */
-    @DeleteMapping(value = "delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "delete")
     public ResponseEntity<ProductResponseEntity> delete(@RequestBody ProductEntity product) {
         //유효성체크
         ProductEntity sendEntity = new ProductEntity();
