@@ -216,7 +216,8 @@ public class OrderService {
 
     private void setPage(OrderSearchEntity searchEntity) throws ServiceMessageException {
         int page = searchEntity.getPage();
-        if (page > 0 && OrderSearchEntity.DEFAULT_PAGE_VIEW_CNT <= searchEntity.getPageViewCnt()) {
+//        if (page > 0 && OrderSearchEntity.DEFAULT_PAGE_VIEW_CNT <= searchEntity.getPageViewCnt()) {
+        if (page > 0) {
             //쿼리에선 0부터 시작.
             page--;
 

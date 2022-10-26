@@ -24,7 +24,7 @@ Content-Type: application/json
 {"userId":"tester", "orderId":1, "productList" :[{"productId":1,"amount":12}, {"productId":2,"amount":5}]}
 
 ### 주문 삭제
-PUT http://localhost:9090/order/api/delete
+DELETE http://localhost:9090/order/api/delete
 Content-Type: application/json
 
 {"userId":"tester", "orderId":1}

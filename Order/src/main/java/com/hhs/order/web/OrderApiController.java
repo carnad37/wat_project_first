@@ -145,7 +145,7 @@ public class OrderApiController {
         OrderEntity orderResult = orderService.update(sendEntity);
 
         OrderResponseEntity<OrderEntity> response = new OrderResponseEntity<>();
-        response.setMessage("주문이 완료되었습니다");
+        response.setMessage("주문이 수정되었습니다");
         response.setResult(orderResult);
 
         return ResponseEntity.ok(response);

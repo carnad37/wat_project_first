@@ -89,7 +89,8 @@ public class ProductService {
             searchEntity = new ProductSearchEntity();
         } else {
             int page = searchEntity.getPage();
-            if (page > 0 && ProductSearchEntity.DEFAULT_PAGE_VIEW_CNT <= searchEntity.getPageViewCnt()) {
+//            if (page > 0 && ProductSearchEntity.DEFAULT_PAGE_VIEW_CNT <= searchEntity.getPageViewCnt()) {
+            if (page > 0) {
                 //쿼리에선 0부터 시작.
                 page--;
 
