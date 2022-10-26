@@ -52,10 +52,11 @@ public class OrderService {
     @Transactional
     public OrderEntity insert(OrderEntity orderEntity) throws ServiceMessageException {
         //주문번호 리스트체크후 제품정보 전송받기
+        if (CollectionUtils.isEmpty(orderEntity.getProductList())) {
+            throw new ServiceMessageException("주문 정보 등록에 실패하였습니다");
+        }
+
         setProductInfo(orderEntity);
-
-        if (CollectionUtils.isEmpty(orderEntity.getProductList())) return null;
-
         orderEntity.setCreateTime(LocalDateTime.now());
 
         int insCnt = 0;
