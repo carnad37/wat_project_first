@@ -4,7 +4,9 @@ import com.hhs.order.dao.OrderMapper;
 import com.hhs.order.entity.OrderEntity;
 import com.hhs.order.entity.OrderSearchEntity;
 import com.hhs.order.entity.ProductEntity;
+import com.hhs.order.except.ServiceMessageException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -48,7 +50,7 @@ public class OrderService {
      * @return
      */
     @Transactional
-    public OrderEntity insert(OrderEntity orderEntity) {
+    public OrderEntity insert(OrderEntity orderEntity) throws ServiceMessageException {
         //주문번호 리스트체크후 제품정보 전송받기
         setProductInfo(orderEntity);
 
@@ -56,8 +58,15 @@ public class OrderService {
 
         orderEntity.setCreateTime(LocalDateTime.now());
 
-        int insCnt = orderMapper.insert(orderEntity);
-//        if (insCnt < 1) //TODO :: 등록된데이터가 없을경우 exception 처리
+        int insCnt = 0;
+
+        try {
+            insCnt = orderMapper.insert(orderEntity);
+        } catch (Exception e) {
+            throw new ServiceMessageException("주문 정보 등록에 실패하였습니다");
+        }
+
+        if (insCnt < 1) throw new ServiceMessageException("주문 정보 등록에 실패하였습니다");
 
         return orderEntity;
     }
@@ -74,13 +83,12 @@ public class OrderService {
      *
      * 제품 상태 검색(구매, 구매취소)
      */
-    public List<OrderEntity> select(OrderSearchEntity searchEntity) {
+    public List<OrderEntity> select(OrderSearchEntity searchEntity) throws ServiceMessageException {
         //페이징 체크
-        //TODO :: exception 처리 필요 (페이지 < 0 이나 pageViewCnt가 OrderSearchEntity.DEFAULT_PAGE_VIEW_CNT보다 작을경우)
         if (searchEntity == null) {
-            //TODO :: 서비스 호출 파라미터 오류
+            throw new ServiceMessageException("잘못된 요청입니다", HttpStatus.BAD_REQUEST);
         } else if (!StringUtils.hasText(searchEntity.getUserId())) {
-            //TODO :: 유저 아이디가 없을경우 오류
+            throw new ServiceMessageException("잘못된 요청입니다", HttpStatus.BAD_REQUEST);
         } else {
             setPage(searchEntity);
         }
@@ -93,7 +101,7 @@ public class OrderService {
      * @param searchEntity
      * @return
      */
-    public OrderEntity selectDetail(OrderSearchEntity searchEntity) {
+    public OrderEntity selectDetail(OrderSearchEntity searchEntity) throws ServiceMessageException {
         //페이징 체크
         setPage(searchEntity);
 
@@ -154,23 +162,33 @@ public class OrderService {
         setProductInfo(orderEntity);
         orderEntity.setDeleteTime(null);
         orderEntity.setCreateTime(LocalDateTime.now());
+        int insCnt = 0;
 
-        int insCnt = orderMapper.update(orderEntity);
-        //TODO :: insert참조
+        try {
+            insCnt = orderMapper.update(orderEntity);
+        } catch (Exception e) {
+            throw new ServiceMessageException("주문 정보 수정에 실패하였습니다");
+        }
+
+        if (insCnt < 1) throw new ServiceMessageException("주문 정보 수정에 실패하였습니다");
 
         return orderEntity;
     }
 
     /**
-     * 제품의 삭제
+     * 주문의 삭제
      *
      * 기본적으로 유저 id와 주문번호를 통해 이루워진다.
      *
      * @return
      */
-    public int delete(OrderEntity order) {
+    public int delete(OrderEntity order) throws ServiceMessageException {
         order.setDeleteTime(LocalDateTime.now());
-        return orderMapper.delete(order);
+        try {
+            return orderMapper.delete(order);
+        } catch (Exception e) {
+            throw new ServiceMessageException("주문 삭제에 실패하였습니다");
+        }
     }
 
     /**
@@ -196,9 +214,9 @@ public class OrderService {
         }
     }
 
-    private void setPage(OrderSearchEntity searchEntity) {
+    private void setPage(OrderSearchEntity searchEntity) throws ServiceMessageException {
         int page = searchEntity.getPage();
-        if (page > 0) {
+        if (page > 0 && OrderSearchEntity.DEFAULT_PAGE_VIEW_CNT <= searchEntity.getPageViewCnt()) {
             //쿼리에선 0부터 시작.
             page--;
 

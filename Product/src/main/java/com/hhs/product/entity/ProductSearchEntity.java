@@ -10,7 +10,7 @@ import java.util.List;
 @Alias("productSearchEntity")
 public class ProductSearchEntity {
 
-    private static final int DEFAULT_PAGE_VIEW_CNT = 10;
+    public static final int DEFAULT_PAGE_VIEW_CNT = 10;
 
     //주문 Id
     private int productId;

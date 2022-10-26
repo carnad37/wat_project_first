@@ -1,10 +1,14 @@
 package com.hhs.order.service;
 
 import com.hhs.order.entity.ProductEntity;
+import com.hhs.order.except.ServiceMessageException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
  *
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ProductService {
 
@@ -28,7 +33,7 @@ public class ProductService {
     private final RestTemplate productTemplate;
 
 
-    public Map<Integer, ProductEntity> select(List<ProductEntity> productList) {
+    public Map<Integer, ProductEntity> select(List<ProductEntity> productList) throws ServiceMessageException {
 
         ProductEntity[] result;
         List<Integer> productIdList= productList.stream().map(ProductEntity::getProductId).collect(Collectors.toList());
@@ -38,10 +43,17 @@ public class ProductService {
         paramMap.put("productIdList", productIdList);
 
         //요청전송
-        //TODO :: 연결실패 exception 처리
-        ResponseEntity<ProductEntity[]> resultEntity = productTemplate.postForEntity("http://localhost:8080/product/api/select/id/multi", paramMap, ProductEntity[].class);
+        ResponseEntity<ProductEntity[]> resultEntity;
+        try {
+            resultEntity = productTemplate.postForEntity("http://localhost:8080/product/api/select/id/multi", paramMap, ProductEntity[].class);
+        } catch (RestClientException re) {
+            log.warn(re.getMessage());
+            throw new ServiceMessageException("제품 정보 확인에 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new ServiceMessageException("알수 없는 오류가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         result = resultEntity.getBody();
-        //TODO :: result가 비어있을경우 처리
 
         return Arrays.stream(result).collect(Collectors.toMap(ProductEntity::getProductId, Function.identity()));
 

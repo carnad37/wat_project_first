@@ -11,3 +11,13 @@
 * 모놀리식과 MSA의 핵심적인 차이점.
 * DI의 이점.
 * @Retention, @Inherited, @Target, @AliasFor 에 관하여.
+
+
+### ?. 추가
+* RestTemplate의 exchange와 (get|post)ForObject의 차이 및 사용하는 시점
+* swagger에 관한 정보.
+* RestTempate 리스트 파라미터로 전달안됨.
+* order id가 max값이라 이전 max값을 알아야지만 다음 상품 등록가능. id값을 날짜로 하는것도 고려.
+* RestTemplate의 getForObject로 list parameter 깔끔하게 넘겨보기(헤더 설정해보기).
+* GET과 POST의 좀더 명확한 사용구분
+* ControllerAdivce와 ErrorController 차이

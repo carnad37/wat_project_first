@@ -6,6 +6,7 @@ import com.hhs.product.entity.ProductSearchEntity;
 import com.hhs.product.except.ServiceMessageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -24,8 +25,14 @@ public class ProductService {
 
     public ProductEntity insert(ProductEntity product) throws ServiceMessageException {
         product.setCreateTime(LocalDateTime.now());
-        //TODO :: DB 관련된 exception 처리필요.
-        int insCnt = productMapper.insert(product);
+
+        int insCnt = 0;
+        try {
+            insCnt = productMapper.insert(product);
+        } catch (Exception e) {
+            throw new ServiceMessageException("제품 등록에 실패하였습니다.");
+        }
+
         if (insCnt < 1) {
             throw new ServiceMessageException("제품 등록에 실패하였습니다.");
         }
@@ -40,8 +47,12 @@ public class ProductService {
         }
 
         product.setUpdateTime(LocalDateTime.now());
-        //TODO :: DB 관련된 exception 처리필요.
-        int updCnt = productMapper.update(product);
+        int updCnt = 0;
+        try {
+            updCnt = productMapper.update(product);
+        } catch (Exception e) {
+            throw new ServiceMessageException("제품 수정에 실패하였습니다.");
+        }
 
         if (updCnt > 0) {
             ProductSearchEntity searchEntity = new ProductSearchEntity();
@@ -60,8 +71,12 @@ public class ProductService {
         }
 
         product.setDeleteTime(LocalDateTime.now());
-        //TODO :: DB 관련된 exception 처리필요.
-        int delCnt = productMapper.delete(product);
+        int delCnt = 0;
+        try {
+            delCnt = productMapper.delete(product);
+        } catch (Exception e) {
+            throw new ServiceMessageException("제품 삭제에 실패하였습니다.");
+        }
 
         if (delCnt < 1) {
             throw new ServiceMessageException("제품 삭제에 실패했습니다");
@@ -74,7 +89,7 @@ public class ProductService {
             searchEntity = new ProductSearchEntity();
         } else {
             int page = searchEntity.getPage();
-            if (page > 0) {
+            if (page > 0 && ProductSearchEntity.DEFAULT_PAGE_VIEW_CNT <= searchEntity.getPageViewCnt()) {
                 //쿼리에선 0부터 시작.
                 page--;
 
@@ -85,18 +100,16 @@ public class ProductService {
                 searchEntity.setPageViewCnt(0);
             }
         }
-        //TODO :: DB 관련된 exception 처리필요.
         return productMapper.select(searchEntity);
     }
 
     public List<ProductEntity> selectByIdList(List<Integer> productIdList) {
         if (CollectionUtils.isEmpty(productIdList)) {
-            //TODO :: 요청 오류 아니면 @NotNull 처리
+            throw new ServiceMessageException("잘못된 요청입니다", HttpStatus.BAD_REQUEST);
         }
 
         ProductSearchEntity searchEntity = new ProductSearchEntity();
         searchEntity.setProductIdList(productIdList);
-        //TODO :: DB 관련된 exception 처리필요.
         return productMapper.select(searchEntity);
     }
 

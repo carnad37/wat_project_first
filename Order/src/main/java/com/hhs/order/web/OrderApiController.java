@@ -168,11 +168,7 @@ public class OrderApiController {
 
         OrderResponseEntity<Integer> response = new OrderResponseEntity<>();
         int delCnt = orderService.delete(sendEntity);
-        if(delCnt > 0) {
-            response.setMessage("성공적으로 주문이 취소되었습니다.");
-        } else {
-            response.setMessage("주문 삭제에 실패하였습니다.");
-        }
+        response.setMessage("성공적으로 주문이 취소되었습니다.");
         response.setResult(delCnt);
 
         return ResponseEntity.ok(response);
